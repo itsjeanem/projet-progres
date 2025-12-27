@@ -2,6 +2,7 @@ from PyQt6 import uic
 from PyQt6.QtWidgets import QWidget
 from controllers.user_controller import UserController
 from views.main_window import MainWindow
+from utils.session import Session
 
 
 class LoginView(QWidget):
@@ -21,6 +22,9 @@ class LoginView(QWidget):
         if error:
             self.label_error.setText(error)
             return
+            
+        # Sauvegarde session
+        Session.login(user)
 
         # Succès → ouvrir la fenêtre principale
         self.open_main_window(user)
