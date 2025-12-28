@@ -74,3 +74,79 @@ class ClientValidator:
             return False, f"Code postal : {error}"
 
         return True, ""
+
+
+class ProductValidator:
+
+    @staticmethod
+    def validate_product_name(name):
+        """Valider le nom du produit"""
+        if not name or len(name.strip()) < 2:
+            return False, "Le nom doit contenir au moins 2 caractères"
+        if len(name) > 200:
+            return False, "Le nom ne doit pas dépasser 200 caractères"
+        return True, ""
+
+    @staticmethod
+    def validate_price(price):
+        """Valider un prix"""
+        if price is None or price == '':
+            return False, "Le prix est obligatoire"
+        try:
+            price = float(price)
+            if price < 0:
+                return False, "Le prix ne peut pas être négatif"
+            return True, ""
+        except ValueError:
+            return False, "Format de prix invalide"
+
+    @staticmethod
+    def validate_stock(stock):
+        """Valider une quantité de stock"""
+        if stock is None or stock == '':
+            stock = 0
+        try:
+            stock = int(stock)
+            if stock < 0:
+                return False, "Le stock ne peut pas être négatif"
+            return True, ""
+        except ValueError:
+            return False, "Format de stock invalide"
+
+    @staticmethod
+    def validate_product_form(nom, prix_achat, prix_vente, stock_min, category_id):
+        """Valider le formulaire produit"""
+        # Vérifier nom
+        is_valid, error = ProductValidator.validate_product_name(nom)
+        if not is_valid:
+            return False, f"Nom : {error}"
+
+        # Vérifier prix achat
+        is_valid, error = ProductValidator.validate_price(prix_achat)
+        if not is_valid:
+            return False, f"Prix achat : {error}"
+
+        # Vérifier prix vente
+        is_valid, error = ProductValidator.validate_price(prix_vente)
+        if not is_valid:
+            return False, f"Prix vente : {error}"
+
+        # Vérifier stock minimum
+        is_valid, error = ProductValidator.validate_stock(stock_min)
+        if not is_valid:
+            return False, f"Stock min : {error}"
+
+        # Vérifier catégorie
+        if not category_id or category_id <= 0:
+            return False, "Catégorie obligatoire"
+
+        # Vérifier que prix_vente > prix_achat
+        try:
+            pa = float(prix_achat)
+            pv = float(prix_vente)
+            if pv <= pa:
+                return False, "Le prix de vente doit être supérieur au prix d'achat"
+        except ValueError:
+            return False, "Erreur conversion prix"
+
+        return True, ""

@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMainWindow, QLabel, QPushButton, QWidget, QVBoxLayo
 from PyQt6.QtCore import Qt
 from utils.session import Session
 from views.clients_view import ClientsView
+from views.products_view import ProductsView
 
 
 class MainWindow(QMainWindow):
@@ -71,6 +72,10 @@ class MainWindow(QMainWindow):
         self.clients_view = ClientsView()
         self.stacked_widget.addWidget(self.clients_view)
         
+        # Vue Produits
+        self.products_view = ProductsView()
+        self.stacked_widget.addWidget(self.products_view)
+        
         # Ajouter au layout
         content_layout.addLayout(sidebar)
         content_layout.addWidget(self.stacked_widget, 1)
@@ -86,8 +91,8 @@ class MainWindow(QMainWindow):
 
     def show_products(self):
         """Afficher la vue produits"""
-        self.stacked_widget.setCurrentWidget(self.home_view)
-        self.home_view.setText("Module Produits (à développer)")
+        self.stacked_widget.setCurrentWidget(self.products_view)
+        self.products_view.load_products()
 
     def show_sales(self):
         """Afficher la vue ventes"""

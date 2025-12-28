@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ProductsForm</class>
+ <widget class="QWidget" name="ProductsForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion des Produits</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>Gestion des Produits</string>
+     </property>
+     <property name="styleSheet">
+      <string>font-size: 18px; font-weight: bold; color: #333;</string>
+     </property>
+    </widget>
+   </item>
+   
+   <item>
+    <layout class="QHBoxLayout" name="toolbarLayout">
+     <item>
+      <widget class="QLineEdit" name="searchInput">
+       <property name="placeholderText">
+        <string>Rechercher par nom...</string>
+       </property>
+      </widget>
+     </item>
+     
+     <item>
+      <widget class="QComboBox" name="categoryFilter">
+       <property name="minimumWidth">
+        <number>150</number>
+       </property>
+      </widget>
+     </item>
+     
+     <item>
+      <widget class="QPushButton" name="btnAdd">
+       <property name="text">
+        <string>+ Ajouter</string>
+       </property>
+       <property name="maximumWidth">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     
+     <item>
+      <widget class="QPushButton" name="btnLowStock">
+       <property name="text">
+        <string>⚠️ Stocks bas</string>
+       </property>
+       <property name="maximumWidth">
+        <number>120</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <widget class="QTableWidget" name="productsTable">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Catégorie</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Produit</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Prix Achat</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Prix Vente</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Marge %</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Stock</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Actions</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+
+   <item>
+    <widget class="QLabel" name="statsLabel">
+     <property name="text">
+      <string>Total produits : 0 | Stocks bas : 0</string>
+     </property>
+     <property name="styleSheet">
+      <string>color: #666; font-size: 10px;</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
