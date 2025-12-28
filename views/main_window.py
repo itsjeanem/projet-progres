@@ -1,5 +1,7 @@
-from PyQt6.QtWidgets import QMainWindow,QLabel,QPushButton,QWidget,QVBoxLayout,QHBoxLayout
+from PyQt6.QtWidgets import QMainWindow, QLabel, QPushButton, QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
+from PyQt6.QtCore import Qt
 from utils.session import Session
+from views.clients_view import ClientsView
 
 
 class MainWindow(QMainWindow):
@@ -11,7 +13,7 @@ class MainWindow(QMainWindow):
 
         self.user = user
         self.setWindowTitle("Gestion Commerciale")
-        self.setMinimumSize(800, 500)
+        self.setMinimumSize(1000, 700)
 
         self.build_ui()
 
@@ -20,28 +22,77 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         main_layout = QVBoxLayout()
+        
+        # En-tête
         header = QHBoxLayout()
-
-        # Infos utilisateur
         self.label_user = QLabel(
             f"Connecté : {self.user['username']} ({self.user['role']})"
         )
-
-        # Bouton logout
         self.btn_logout = QPushButton("Déconnexion")
         self.btn_logout.clicked.connect(self.logout)
 
         header.addWidget(self.label_user)
         header.addStretch()
         header.addWidget(self.btn_logout)
-
         main_layout.addLayout(header)
 
-        # Zone principale (future navigation)
-        self.content = QLabel("Bienvenue dans l'application")
-        main_layout.addWidget(self.content)
-
+        # Navigation + contenu
+        content_layout = QHBoxLayout()
+        
+        # Sidebar avec navigation
+        sidebar = QVBoxLayout()
+        sidebar.addWidget(QLabel("Menu"))
+        
+        self.btn_clients = QPushButton("👥 Clients")
+        self.btn_clients.setMinimumWidth(120)
+        self.btn_clients.clicked.connect(self.show_clients)
+        
+        self.btn_products = QPushButton("📦 Produits")
+        self.btn_products.setMinimumWidth(120)
+        self.btn_products.clicked.connect(self.show_products)
+        
+        self.btn_sales = QPushButton("💰 Ventes")
+        self.btn_sales.setMinimumWidth(120)
+        self.btn_sales.clicked.connect(self.show_sales)
+        
+        sidebar.addWidget(self.btn_clients)
+        sidebar.addWidget(self.btn_products)
+        sidebar.addWidget(self.btn_sales)
+        sidebar.addStretch()
+        
+        # Stack Widget pour les différentes vues
+        self.stacked_widget = QStackedWidget()
+        
+        # Vue d'accueil
+        self.home_view = QLabel("Bienvenue dans l'application")
+        self.stacked_widget.addWidget(self.home_view)
+        
+        # Vue Clients
+        self.clients_view = ClientsView()
+        self.stacked_widget.addWidget(self.clients_view)
+        
+        # Ajouter au layout
+        content_layout.addLayout(sidebar)
+        content_layout.addWidget(self.stacked_widget, 1)
+        
+        main_layout.addLayout(content_layout)
+        
         central.setLayout(main_layout)
+
+    def show_clients(self):
+        """Afficher la vue clients"""
+        self.stacked_widget.setCurrentWidget(self.clients_view)
+        self.clients_view.load_clients()
+
+    def show_products(self):
+        """Afficher la vue produits"""
+        self.stacked_widget.setCurrentWidget(self.home_view)
+        self.home_view.setText("Module Produits (à développer)")
+
+    def show_sales(self):
+        """Afficher la vue ventes"""
+        self.stacked_widget.setCurrentWidget(self.home_view)
+        self.home_view.setText("Module Ventes (à développer)")
 
     def logout(self):
         Session.logout()

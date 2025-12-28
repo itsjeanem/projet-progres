@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ClientsForm</class>
+ <widget class="QWidget" name="ClientsForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion des Clients</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <!-- En-tête avec titre -->
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>Gestion des Clients</string>
+     </property>
+     <property name="styleSheet">
+      <string>font-size: 18px; font-weight: bold; color: #333;</string>
+     </property>
+    </widget>
+   </item>
+   
+   <!-- Barre de recherche et boutons -->
+   <item>
+    <layout class="QHBoxLayout" name="toolbarLayout">
+     <!-- Recherche -->
+     <item>
+      <widget class="QLineEdit" name="searchInput">
+       <property name="placeholderText">
+        <string>Rechercher par nom, prénom, téléphone ou email...</string>
+       </property>
+      </widget>
+     </item>
+     
+     <!-- Boutons -->
+     <item>
+      <widget class="QPushButton" name="btnAdd">
+       <property name="text">
+        <string>+ Ajouter</string>
+       </property>
+       <property name="maximumWidth">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     
+     <item>
+      <widget class="QPushButton" name="btnExportExcel">
+       <property name="text">
+        <string>📊 Excel</string>
+       </property>
+       <property name="maximumWidth">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     
+     <item>
+      <widget class="QPushButton" name="btnExportPDF">
+       <property name="text">
+        <string>📄 PDF</string>
+       </property>
+       <property name="maximumWidth">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <!-- TableView -->
+   <item>
+    <widget class="QTableWidget" name="clientsTable">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Nom</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Prénom</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Téléphone</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Email</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Ville</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Actions</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+
+   <!-- Statistiques -->
+   <item>
+    <widget class="QLabel" name="statsLabel">
+     <property name="text">
+      <string>Total clients : 0</string>
+     </property>
+     <property name="styleSheet">
+      <string>color: #666; font-size: 10px;</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,6 @@
+PyQt6==6.6.1
+mysql-connector-python==8.2.0
+python-dotenv==1.0.0
+bcrypt==4.1.1
+openpyxl==3.11.0
+reportlab==4.0.9
