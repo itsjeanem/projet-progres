@@ -210,7 +210,7 @@ class Product:
         FROM mouvements_stock ms
         LEFT JOIN users u ON ms.user_id = u.id
         WHERE ms.produit_id = %s
-        ORDER BY ms.created_at DESC
+        ORDER BY ms.date_mouvement DESC
         """
 
         try:
