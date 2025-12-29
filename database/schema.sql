@@ -124,6 +124,18 @@ CREATE TABLE parametres(
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- Table paiements
+CREATE TABLE paiements(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    vente_id INT NOT NULL,
+    montant DECIMAL(10,2) NOT NULL,
+    date_paiement DATETIME DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
+    FOREIGN KEY (vente_id) REFERENCES ventes(id) ON DELETE CASCADE,
+    INDEX idx_vente(vente_id),
+    INDEX idx_date(date_paiement)
+) ENGINE=InnoDB;
+
 -- Trigger pour mise a jour stock apres vente
 DELIMITER //
 CREATE TRIGGER after_vente_insert

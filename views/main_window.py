@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from utils.session import Session
 from views.clients_view import ClientsView
 from views.products_view import ProductsView
+from views.sales_view import SalesView
 
 
 class MainWindow(QMainWindow):
@@ -76,6 +77,10 @@ class MainWindow(QMainWindow):
         self.products_view = ProductsView()
         self.stacked_widget.addWidget(self.products_view)
         
+        # Vue Ventes
+        self.sales_view = SalesView()
+        self.stacked_widget.addWidget(self.sales_view)
+        
         # Ajouter au layout
         content_layout.addLayout(sidebar)
         content_layout.addWidget(self.stacked_widget, 1)
@@ -96,8 +101,8 @@ class MainWindow(QMainWindow):
 
     def show_sales(self):
         """Afficher la vue ventes"""
-        self.stacked_widget.setCurrentWidget(self.home_view)
-        self.home_view.setText("Module Ventes (à développer)")
+        self.stacked_widget.setCurrentWidget(self.sales_view)
+        self.sales_view.load_sales()
 
     def logout(self):
         Session.logout()

@@ -150,3 +150,100 @@ class ProductValidator:
             return False, "Erreur conversion prix"
 
         return True, ""
+
+
+class SaleValidator:
+
+    @staticmethod
+    def validate_client_id(client_id):
+        """Valider la sélection client"""
+        if not client_id or client_id <= 0:
+            return False, "Client obligatoire"
+        return True, ""
+
+    @staticmethod
+    def validate_articles(articles):
+        """Valider la liste des articles"""
+        if not articles or len(articles) == 0:
+            return False, "Au moins un article obligatoire"
+        
+        for article in articles:
+            if 'produit_id' not in article or article['produit_id'] <= 0:
+                return False, "Produit invalide"
+            if 'quantite' not in article or article['quantite'] <= 0:
+                return False, "Quantité doit être supérieure à 0"
+            if 'prix_unitaire' not in article or article['prix_unitaire'] < 0:
+                return False, "Prix unitaire invalide"
+        
+        return True, ""
+
+    @staticmethod
+    def validate_remise(remise, remise_type, montant_total):
+        """Valider la remise"""
+        try:
+            remise = float(remise)
+            if remise < 0:
+                return False, "Remise ne peut pas être négative"
+            
+            if remise_type == 'pourcentage':
+                if remise > 100:
+                    return False, "Pourcentage ne peut pas dépasser 100%"
+            else:  # montant
+                if remise > montant_total:
+                    return False, "Remise ne peut pas dépasser le montant total"
+            
+            return True, ""
+        except ValueError:
+            return False, "Format remise invalide"
+
+    @staticmethod
+    def validate_tva(tva):
+        """Valider le TVA"""
+        try:
+            tva = float(tva)
+            if tva < 0 or tva > 100:
+                return False, "TVA doit être entre 0 et 100"
+            return True, ""
+        except ValueError:
+            return False, "Format TVA invalide"
+
+    @staticmethod
+    def validate_paiement(montant_paye, montant_total):
+        """Valider un paiement"""
+        try:
+            montant_paye = float(montant_paye)
+            if montant_paye <= 0:
+                return False, "Montant doit être supérieur à 0"
+            if montant_paye > montant_total:
+                return False, f"Montant supérieur au total ({montant_total}€)"
+            return True, ""
+        except ValueError:
+            return False, "Format montant invalide"
+
+    @staticmethod
+    def validate_sale_form(client_id, articles, tva, remise, remise_type):
+        """Valider l'ensemble du formulaire vente"""
+        # Vérifier client
+        is_valid, error = SaleValidator.validate_client_id(client_id)
+        if not is_valid:
+            return False, error
+
+        # Vérifier articles
+        is_valid, error = SaleValidator.validate_articles(articles)
+        if not is_valid:
+            return False, error
+
+        # Vérifier TVA
+        is_valid, error = SaleValidator.validate_tva(tva)
+        if not is_valid:
+            return False, error
+
+        # Calculer montant total pour valider remise
+        montant_ht = sum(art['quantite'] * art['prix_unitaire'] for art in articles)
+        
+        # Vérifier remise
+        is_valid, error = SaleValidator.validate_remise(remise, remise_type, montant_ht)
+        if not is_valid:
+            return False, error
+
+        return True, ""
