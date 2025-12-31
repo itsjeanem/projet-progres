@@ -4,3 +4,4 @@ python-dotenv==1.0.0
 bcrypt==4.1.1
 openpyxl==3.11.0
 reportlab==4.0.9
+matplotib==3.10.8

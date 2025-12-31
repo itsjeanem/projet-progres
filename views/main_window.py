@@ -4,6 +4,7 @@ from utils.session import Session
 from views.clients_view import ClientsView
 from views.products_view import ProductsView
 from views.sales_view import SalesView
+from views.dashboard_view import DashboardView
 
 
 class MainWindow(QMainWindow):
@@ -45,6 +46,10 @@ class MainWindow(QMainWindow):
         sidebar = QVBoxLayout()
         sidebar.addWidget(QLabel("Menu"))
         
+        self.btn_dashboard = QPushButton("📊 Dashboard")
+        self.btn_dashboard.setMinimumWidth(120)
+        self.btn_dashboard.clicked.connect(self.show_dashboard)
+        
         self.btn_clients = QPushButton("👥 Clients")
         self.btn_clients.setMinimumWidth(120)
         self.btn_clients.clicked.connect(self.show_clients)
@@ -57,6 +62,7 @@ class MainWindow(QMainWindow):
         self.btn_sales.setMinimumWidth(120)
         self.btn_sales.clicked.connect(self.show_sales)
         
+        sidebar.addWidget(self.btn_dashboard)
         sidebar.addWidget(self.btn_clients)
         sidebar.addWidget(self.btn_products)
         sidebar.addWidget(self.btn_sales)
@@ -65,8 +71,8 @@ class MainWindow(QMainWindow):
         # Stack Widget pour les différentes vues
         self.stacked_widget = QStackedWidget()
         
-        # Vue d'accueil
-        self.home_view = QLabel("Bienvenue dans l'application")
+        # Vue d'accueil - Dashboard
+        self.home_view = DashboardView()
         self.stacked_widget.addWidget(self.home_view)
         
         # Vue Clients
@@ -88,6 +94,10 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(content_layout)
         
         central.setLayout(main_layout)
+
+    def show_dashboard(self):
+        """Afficher le dashboard"""
+        self.stacked_widget.setCurrentWidget(self.home_view)
 
     def show_clients(self):
         """Afficher la vue clients"""
