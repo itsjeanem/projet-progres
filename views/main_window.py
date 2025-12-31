@@ -5,6 +5,7 @@ from views.clients_view import ClientsView
 from views.products_view import ProductsView
 from views.sales_view import SalesView
 from views.dashboard_view import DashboardView
+from views.settings_view import SettingsView
 
 
 class MainWindow(QMainWindow):
@@ -62,10 +63,15 @@ class MainWindow(QMainWindow):
         self.btn_sales.setMinimumWidth(120)
         self.btn_sales.clicked.connect(self.show_sales)
         
+        self.btn_settings = QPushButton("⚙️ Paramètres")
+        self.btn_settings.setMinimumWidth(120)
+        self.btn_settings.clicked.connect(self.show_settings)
+        
         sidebar.addWidget(self.btn_dashboard)
         sidebar.addWidget(self.btn_clients)
         sidebar.addWidget(self.btn_products)
         sidebar.addWidget(self.btn_sales)
+        sidebar.addWidget(self.btn_settings)
         sidebar.addStretch()
         
         # Stack Widget pour les différentes vues
@@ -86,6 +92,10 @@ class MainWindow(QMainWindow):
         # Vue Ventes
         self.sales_view = SalesView()
         self.stacked_widget.addWidget(self.sales_view)
+        
+        # Vue Paramètres
+        self.settings_view = SettingsView()
+        self.stacked_widget.addWidget(self.settings_view)
         
         # Ajouter au layout
         content_layout.addLayout(sidebar)
@@ -113,6 +123,10 @@ class MainWindow(QMainWindow):
         """Afficher la vue ventes"""
         self.stacked_widget.setCurrentWidget(self.sales_view)
         self.sales_view.load_sales()
+
+    def show_settings(self):
+        """Afficher la vue paramètres"""
+        self.stacked_widget.setCurrentWidget(self.settings_view)
 
     def logout(self):
         Session.logout()
