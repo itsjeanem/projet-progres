@@ -7,6 +7,7 @@ from PyQt6.QtCore import Qt
 from controllers.client_controller import ClientController
 from utils.validators import ClientValidator
 from utils.excel_exporter import ClientExporter
+from utils.pdf_generator import ClientPDFGenerator
 from datetime import datetime
 
 
@@ -170,11 +171,19 @@ class ClientsView(QWidget):
 
     def export_pdf(self):
         """Exporter les clients en PDF"""
-        QMessageBox.information(
+        filepath, _ = QFileDialog.getSaveFileName(
             self,
-            "Fonctionnalité à venir",
-            "L'export PDF sera disponible dans une prochaine version."
+            "Exporter en PDF",
+            f"clients_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            "PDF Files (*.pdf)"
         )
+        
+        if filepath:
+            success, message = ClientPDFGenerator.export_clients_list(self.clients_data, filepath)
+            if success:
+                QMessageBox.information(self, "Succès", message)
+            else:
+                QMessageBox.critical(self, "Erreur", message)
 
     def show_context_menu(self, position):
         """Afficher un menu contextuel"""
