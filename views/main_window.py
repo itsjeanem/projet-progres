@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QMainWindow, QLabel, QPushButton, QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget
 from PyQt6.QtCore import Qt
 from utils.session import Session
+from utils.permissions import check_permission, check_role, Permission
 from views.clients_view import ClientsView
 from views.products_view import ProductsView
 from views.sales_view import SalesView
@@ -27,10 +28,11 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout()
         
-        # En-tête
+        # En-tête avec infos utilisateur et permissions
         header = QHBoxLayout()
+        role_display = self._get_role_display()
         self.label_user = QLabel(
-            f"Connecté : {self.user['username']} ({self.user['role']})"
+            f"Connecté : {self.user['username']} | Rôle: {role_display}"
         )
         self.btn_logout = QPushButton("Déconnexion")
         self.btn_logout.clicked.connect(self.logout)
@@ -43,35 +45,45 @@ class MainWindow(QMainWindow):
         # Navigation + contenu
         content_layout = QHBoxLayout()
         
-        # Sidebar avec navigation
+        # Sidebar avec navigation basée sur les rôles
         sidebar = QVBoxLayout()
         sidebar.addWidget(QLabel("Menu"))
         
-        self.btn_dashboard = QPushButton("📊 Dashboard")
-        self.btn_dashboard.setMinimumWidth(120)
-        self.btn_dashboard.clicked.connect(self.show_dashboard)
+        # Dashboard - visible pour tous
+        if check_permission(Permission.VIEW_DASHBOARD):
+            self.btn_dashboard = QPushButton("📊 Dashboard")
+            self.btn_dashboard.setMinimumWidth(120)
+            self.btn_dashboard.clicked.connect(self.show_dashboard)
+            sidebar.addWidget(self.btn_dashboard)
         
-        self.btn_clients = QPushButton("👥 Clients")
-        self.btn_clients.setMinimumWidth(120)
-        self.btn_clients.clicked.connect(self.show_clients)
+        # Clients - vendeurs et managers
+        if check_permission(Permission.VIEW_CLIENTS):
+            self.btn_clients = QPushButton("👥 Clients")
+            self.btn_clients.setMinimumWidth(120)
+            self.btn_clients.clicked.connect(self.show_clients)
+            sidebar.addWidget(self.btn_clients)
         
-        self.btn_products = QPushButton("📦 Produits")
-        self.btn_products.setMinimumWidth(120)
-        self.btn_products.clicked.connect(self.show_products)
+        # Produits - vendeurs et managers
+        if check_permission(Permission.VIEW_PRODUCTS):
+            self.btn_products = QPushButton("📦 Produits")
+            self.btn_products.setMinimumWidth(120)
+            self.btn_products.clicked.connect(self.show_products)
+            sidebar.addWidget(self.btn_products)
         
-        self.btn_sales = QPushButton("💰 Ventes")
-        self.btn_sales.setMinimumWidth(120)
-        self.btn_sales.clicked.connect(self.show_sales)
+        # Ventes - tous
+        if check_permission(Permission.VIEW_SALES):
+            self.btn_sales = QPushButton("💰 Ventes")
+            self.btn_sales.setMinimumWidth(120)
+            self.btn_sales.clicked.connect(self.show_sales)
+            sidebar.addWidget(self.btn_sales)
         
-        self.btn_settings = QPushButton("⚙️ Paramètres")
-        self.btn_settings.setMinimumWidth(120)
-        self.btn_settings.clicked.connect(self.show_settings)
+        # Paramètres - admins
+        if check_permission(Permission.VIEW_SETTINGS):
+            self.btn_settings = QPushButton("⚙️ Paramètres")
+            self.btn_settings.setMinimumWidth(120)
+            self.btn_settings.clicked.connect(self.show_settings)
+            sidebar.addWidget(self.btn_settings)
         
-        sidebar.addWidget(self.btn_dashboard)
-        sidebar.addWidget(self.btn_clients)
-        sidebar.addWidget(self.btn_products)
-        sidebar.addWidget(self.btn_sales)
-        sidebar.addWidget(self.btn_settings)
         sidebar.addStretch()
         
         # Stack Widget pour les différentes vues
@@ -105,28 +117,43 @@ class MainWindow(QMainWindow):
         
         central.setLayout(main_layout)
 
+    def _get_role_display(self):
+        """Get human readable role name"""
+        role = self.user.get('role', 'vendeur')
+        role_names = {
+            'admin': 'Administrateur',
+            'manager': 'Manager',
+            'vendeur': 'Vendeur'
+        }
+        return role_names.get(role, role)
+
     def show_dashboard(self):
         """Afficher le dashboard"""
-        self.stacked_widget.setCurrentWidget(self.home_view)
+        if check_permission(Permission.VIEW_DASHBOARD):
+            self.stacked_widget.setCurrentWidget(self.home_view)
 
     def show_clients(self):
         """Afficher la vue clients"""
-        self.stacked_widget.setCurrentWidget(self.clients_view)
-        self.clients_view.load_clients()
+        if check_permission(Permission.VIEW_CLIENTS):
+            self.stacked_widget.setCurrentWidget(self.clients_view)
+            self.clients_view.load_clients()
 
     def show_products(self):
         """Afficher la vue produits"""
-        self.stacked_widget.setCurrentWidget(self.products_view)
-        self.products_view.load_products()
+        if check_permission(Permission.VIEW_PRODUCTS):
+            self.stacked_widget.setCurrentWidget(self.products_view)
+            self.products_view.load_products()
 
     def show_sales(self):
         """Afficher la vue ventes"""
-        self.stacked_widget.setCurrentWidget(self.sales_view)
-        self.sales_view.load_sales()
+        if check_permission(Permission.VIEW_SALES):
+            self.stacked_widget.setCurrentWidget(self.sales_view)
+            self.sales_view.load_sales()
 
     def show_settings(self):
         """Afficher la vue paramètres"""
-        self.stacked_widget.setCurrentWidget(self.settings_view)
+        if check_permission(Permission.VIEW_SETTINGS):
+            self.stacked_widget.setCurrentWidget(self.settings_view)
 
     def logout(self):
         Session.logout()
@@ -134,3 +161,4 @@ class MainWindow(QMainWindow):
         self.login_window = LoginView()
         self.login_window.show()
         self.close()
+
