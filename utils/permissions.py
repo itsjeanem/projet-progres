@@ -150,3 +150,12 @@ def check_role(*roles):
     if not user:
         return False
     return user['role'] in roles
+
+
+def check_permission(permission: Permission):
+    """Check if current user has a specific permission (returns bool)"""
+    user = Session.get_user()
+    if not user:
+        return False
+    user_permissions = get_user_permissions(user['role'])
+    return permission in user_permissions
