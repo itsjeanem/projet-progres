@@ -48,13 +48,13 @@ class SettingsView(QWidget):
         tabs = QTabWidget()
         
         # Onglet Entreprise
-        tabs.addTab(self.create_company_tab(), "🏢 Entreprise")
+        # tabs.addTab(self.create_company_tab(), "🏢 Entreprise")
         
         # Onglet Utilisateurs
         tabs.addTab(self.create_users_tab(), "👥 Utilisateurs")
         
         # Onglet Paramètres généraux
-        tabs.addTab(self.create_general_tab(), "⚙️ Paramètres généraux")
+        # tabs.addTab(self.create_general_tab(), "⚙️ Paramètres généraux")
         
         layout.addWidget(tabs)
         self.setLayout(layout)
