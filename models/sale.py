@@ -213,8 +213,11 @@ class Sale:
                 conn.close()
                 return False, "Vente non trouvée"
             
-            montant_total = result['montant_total']
-            montant_deja_paye = result['montant_paye']
+            # Convertir en float pour éviter les erreurs Decimal + float
+            montant_total = float(result['montant_total'])
+            montant_deja_paye = float(result['montant_paye'])
+            montant_paye = float(montant_paye)
+            
             nouveau_paiement = montant_deja_paye + montant_paye
             
             if nouveau_paiement > montant_total:
@@ -245,7 +248,8 @@ class Sale:
             cursor.execute(payment_sql, (vente_id, montant_paye, datetime.now()))
             
             conn.commit()
-            return True, f"Paiement enregistré : {montant_paye}€ (Montant restant: {montant_total - nouveau_paiement}€)"
+            montant_restant = montant_total - nouveau_paiement
+            return True, f"Paiement enregistré : {montant_paye:.2f}€ (Montant restant: {montant_restant:.2f}€)"
         
         except Exception as e:
             conn.rollback()
@@ -394,7 +398,7 @@ class Sale:
             SUM(montant_total) as ca_total,
             AVG(montant_total) as ticket_moyen,
             SUM(CASE WHEN statut = 'payee' THEN montant_total ELSE 0 END) as ca_paye,
-            SUM(CASE WHEN statut IN ('en_cours', 'partielle') THEN montant_reste ELSE 0 END) as montant_reste_total
+            SUM(CASE WHEN statut IN ('en_cours', 'partielle') THEN (montant_total - montant_paye) ELSE 0 END) as montant_reste_total
         FROM ventes
         WHERE DATE(date_vente) = CURDATE()
         """
@@ -403,8 +407,10 @@ class Sale:
             cursor.execute(sql)
             stats = cursor.fetchone()
             conn.close()
+            
+            # Convertir tous les Decimal en float pour éviter les erreurs de type
             return {
-                'total_ventes': stats['total_ventes'] or 0,
+                'total_ventes': int(stats['total_ventes'] or 0),
                 'ca_total': float(stats['ca_total'] or 0),
                 'ticket_moyen': float(stats['ticket_moyen'] or 0),
                 'ca_paye': float(stats['ca_paye'] or 0),
@@ -412,4 +418,10 @@ class Sale:
             }
         except Exception as e:
             print(f"Erreur statistiques : {e}")
-            return {}
+            return {
+                'total_ventes': 0,
+                'ca_total': 0.0,
+                'ticket_moyen': 0.0,
+                'ca_paye': 0.0,
+                'montant_reste': 0.0
+            }

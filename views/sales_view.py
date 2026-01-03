@@ -129,7 +129,8 @@ class SalesView(QWidget):
 
     def filter_by_status(self):
         """Filtrer par statut"""
-        self.load_sales()
+        filtered = self.filter_by_status_internal(self.sales_data)
+        self.refresh_table(filtered)
 
     def filter_by_status_internal(self, sales):
         """Filtrer les ventes par statut sélectionné"""
@@ -203,7 +204,11 @@ class SaleFormDialog(QDialog):
         self.setWindowTitle("Nouvelle Vente")
         self.setGeometry(100, 100, 900, 600)
         self.articles = []
-        self.init_ui()
+        try:
+            self.init_ui()
+        except Exception as e:
+            print(f"Erreur lors de l'initialisation du formulaire de vente : {e}")
+            QMessageBox.critical(self, "Erreur", f"Erreur lors de l'initialisation : {str(e)}")
 
     def init_ui(self):
         """Initialiser l'interface"""
@@ -215,10 +220,6 @@ class SaleFormDialog(QDialog):
         self.client_combo = QComboBox()
         self.load_clients()
         client_layout.addWidget(self.client_combo)
-        
-        btn_new_client = QPushButton("➕ Nouveau")
-        btn_new_client.clicked.connect(self.open_new_client_dialog)
-        client_layout.addWidget(btn_new_client)
         layout.addLayout(client_layout)
         
         # Sélection produits
@@ -312,20 +313,83 @@ class SaleFormDialog(QDialog):
 
     def load_clients(self):
         """Charger la liste des clients"""
-        clients = ClientController.get_all_clients()
-        self.client_combo.clear()
-        for client in clients:
-            nom_complet = f"{client.get('nom', '')} {client.get('prenom', '')}"
-            self.client_combo.addItem(nom_complet, client.get('id'))
+        try:
+            clients = ClientController.get_all_clients()
+            self.client_combo.clear()
+            
+            if not clients:
+                self.client_combo.addItem("Aucun client disponible", None)
+                QMessageBox.warning(self, "Base de données", "Aucun client trouvé. Vérifiez que la base de données est connectée et contient des clients.")
+                return
+            
+            for client in clients:
+                try:
+                    nom = client.get('nom', 'N/A')
+                    prenom = client.get('prenom', 'N/A')
+                    client_id = client.get('id')
+                    
+                    if client_id is None:
+                        continue
+                    
+                    nom_complet = f"{nom} {prenom}"
+                    self.client_combo.addItem(nom_complet, client_id)
+                except Exception as e:
+                    print(f"Erreur lors du chargement du client : {e}")
+                    continue
+        except Exception as e:
+            error_msg = str(e)
+            print(f"Erreur lors du chargement des clients : {error_msg}")
+            self.client_combo.clear()
+            self.client_combo.addItem("⚠️ Erreur de connexion", None)
+            QMessageBox.critical(self, "Erreur de connexion", 
+                f"Impossible de charger les clients.\n\n"
+                f"Vérifiez que le serveur MySQL est démarré.\n\n"
+                f"Détails: {error_msg}")
 
     def load_products(self):
         """Charger la liste des produits"""
-        products = ProductController.get_all_products()
-        self.product_combo.clear()
-        for prod in products:
-            nom = f"{prod.get('nom', '')} ({prod.get('categorie', 'N/A')})"
-            prix = float(prod.get('prix_vente', 0))
-            self.product_combo.addItem(nom, (prod.get('id'), prix))
+        try:
+            products = ProductController.get_all_products()
+            self.product_combo.clear()
+            
+            if not products:
+                self.product_combo.addItem("Aucun produit disponible", None)
+                QMessageBox.warning(self, "Base de données", "Aucun produit trouvé. Vérifiez que la base de données est connectée et contient des produits.")
+                return
+            
+            for prod in products:
+                try:
+                    # Récupérer les données avec gestion des valeurs manquantes
+                    nom = prod.get('nom', 'Produit sans nom')
+                    categorie = prod.get('categorie', 'N/A')
+                    prix_vente = prod.get('prix_vente', 0)
+                    produit_id = prod.get('id')
+                    
+                    # Vérifier les valeurs
+                    if produit_id is None:
+                        continue
+                    
+                    # Convertir le prix en float
+                    try:
+                        prix = float(prix_vente) if prix_vente else 0.0
+                    except (ValueError, TypeError):
+                        prix = 0.0
+                    
+                    # Ajouter au combo box
+                    display_text = f"{nom} ({categorie}) - {prix:.2f}€"
+                    self.product_combo.addItem(display_text, (produit_id, prix))
+                except Exception as e:
+                    print(f"Erreur lors du chargement du produit : {e}")
+                    continue
+        except Exception as e:
+            error_msg = str(e)
+            print(f"Erreur lors du chargement des produits : {error_msg}")
+            self.product_combo.clear()
+            self.product_combo.addItem("⚠️ Erreur de connexion", None)
+            QMessageBox.critical(self, "Erreur de connexion", 
+                f"Impossible de charger les produits.\n\n"
+                f"Vérifiez que le serveur MySQL est démarré.\n\n"
+                f"Détails: {error_msg}")
 
     def add_product(self):
         """Ajouter un produit aux articles"""
@@ -333,27 +397,46 @@ class SaleFormDialog(QDialog):
             QMessageBox.warning(self, "Erreur", "Sélectionnez un produit")
             return
         
-        product_id, prix_unitaire = self.product_combo.currentData()
-        quantite = self.quantity_input.value()
+        current_data = self.product_combo.currentData()
+        if current_data is None or not isinstance(current_data, tuple):
+            QMessageBox.warning(self, "Erreur", "Produit invalide")
+            return
         
-        # Vérifier si produit déjà présent
-        for article in self.articles:
-            if article['produit_id'] == product_id:
-                article['quantite'] += quantite
-                self.update_articles_table()
-                self.update_totals()
-                return
-        
-        # Ajouter nouvel article
-        self.articles.append({
-            'produit_id': product_id,
-            'quantite': quantite,
-            'prix_unitaire': prix_unitaire,
-            'nom': self.product_combo.currentText().split('(')[0].strip()
-        })
-        
-        self.update_articles_table()
-        self.update_totals()
+        try:
+            product_id, prix_unitaire = current_data
+            prix_unitaire = float(prix_unitaire)
+            quantite = self.quantity_input.value()
+            
+            # Vérifier si produit déjà présent
+            for article in self.articles:
+                if article['produit_id'] == product_id:
+                    article['quantite'] += quantite
+                    self.update_articles_table()
+                    self.update_totals()
+                    return
+            
+            # Extraire le nom du produit de manière sécurisée
+            combo_text = self.product_combo.currentText()
+            # Format: "Nom (Catégorie) - Prix€"
+            if '(' in combo_text:
+                nom = combo_text.split('(')[0].strip()
+            else:
+                nom = combo_text
+            
+            # Ajouter nouvel article
+            self.articles.append({
+                'produit_id': product_id,
+                'quantite': quantite,
+                'prix_unitaire': prix_unitaire,
+                'nom': nom
+            })
+            
+            self.update_articles_table()
+            self.update_totals()
+        except (ValueError, TypeError) as e:
+            QMessageBox.warning(self, "Erreur", f"Erreur de conversion de données : {str(e)}")
+        except Exception as e:
+            QMessageBox.warning(self, "Erreur", f"Erreur lors de l'ajout du produit : {str(e)}")
 
     def update_articles_table(self):
         """Mettre à jour l'affichage des articles"""
