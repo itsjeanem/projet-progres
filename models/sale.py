@@ -32,7 +32,9 @@ class Sale:
         conn.close()
         
         if result:
-            last_num = result[0].split('/')[-1]
+            # Accéder au résultat comme un dictionnaire
+            numero = result['numero_facture']
+            last_num = numero.split('/')[-1]
             next_num = str(int(last_num) + 1).zfill(6)
         else:
             next_num = "000001"
@@ -48,9 +50,21 @@ class Sale:
             ...
         ]
         """
+        # Validation des paramètres
+        if not client_id or not user_id:
+            return False, "client_id et user_id sont obligatoires"
+        
+        if not articles or len(articles) == 0:
+            return False, "Au moins un article est obligatoire"
+        
+        # Valider que chaque article a les champs requis
+        for i, article in enumerate(articles):
+            if 'produit_id' not in article or 'quantite' not in article or 'prix_unitaire' not in article:
+                return False, f"Article {i+1} manque des champs obligatoires (produit_id, quantite, prix_unitaire)"
+        
         conn = get_connection()
         if not conn:
-            return False, "Erreur de connexion"
+            return False, "Erreur de connexion à la base de données"
 
         cursor = conn.cursor()
         
@@ -80,6 +94,10 @@ class Sale:
             cursor.execute(vente_sql, (numero_facture, client_id, user_id, montant_ttc, notes))
             vente_id = cursor.lastrowid
             
+            if not vente_id:
+                conn.rollback()
+                return False, "Erreur lors de la création de la vente (lastrowid non obtenu)"
+            
             # Ajouter les articles
             detail_sql = """
             INSERT INTO ventes_details (vente_id, produit_id, quantite, prix_unitaire)
@@ -95,11 +113,14 @@ class Sale:
                 ))
             
             conn.commit()
-            return True, f"Vente créée (Facture: {numero_facture})"
+            return True, f"Vente créée avec succès"
         
         except Exception as e:
             conn.rollback()
-            return False, f"Erreur : {str(e)}"
+            error_msg = str(e) if str(e) else "Erreur inconnue"
+            import traceback
+            print(f"Traceback détaillé: {traceback.format_exc()}")
+            return False, f"Erreur : {error_msg}"
         finally:
             conn.close()
 

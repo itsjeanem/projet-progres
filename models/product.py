@@ -26,7 +26,7 @@ class Product:
             if stock_actuel > 0:
                 Product.record_stock_movement(product_id, stock_actuel, "entree", None, "Création stock initial")
             
-            return True, f"Produit créé (ID: {product_id})"
+            return True, f"Produit créé avec succès"
         except Exception as e:
             return False, f"Erreur : {str(e)}"
         finally:

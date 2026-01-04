@@ -173,10 +173,6 @@ class SettingsView(QWidget):
         btn_add.clicked.connect(self.open_new_user_dialog)
         buttons_layout.addWidget(btn_add)
         
-        btn_edit = QPushButton("✏️ Modifier")
-        btn_edit.clicked.connect(self.edit_selected_user)
-        buttons_layout.addWidget(btn_edit)
-        
         btn_reset_pwd = QPushButton("🔑 Réinitialiser mot de passe")
         btn_reset_pwd.clicked.connect(self.reset_password)
         buttons_layout.addWidget(btn_reset_pwd)
@@ -214,16 +210,6 @@ class SettingsView(QWidget):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.load_users()
 
-    def edit_selected_user(self):
-        """Éditer l'utilisateur sélectionné"""
-        row = self.users_table.currentRow()
-        if row < 0:
-            QMessageBox.warning(self, "Erreur", "Sélectionnez un utilisateur")
-            return
-        
-        user_id = int(self.users_table.item(row, 0).text())
-        # À implémenter : ouvrir un dialogue d'édition
-        QMessageBox.information(self, "Info", "Fonctionnalité à développer")
 
     def reset_password(self):
         """Réinitialiser le mot de passe"""
