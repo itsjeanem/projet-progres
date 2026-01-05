@@ -446,3 +446,34 @@ class Sale:
                 'ca_paye': 0.0,
                 'montant_reste': 0.0
             }
+
+    @staticmethod
+    def export_to_pdf(vente_id, output_path, company_info=None):
+        """Exporter une vente en PDF (facture)"""
+        try:
+            from utils.pdf_generator import InvoiceGenerator
+            
+            # Récupérer les données de la vente
+            vente = Sale.get_by_id(vente_id)
+            if not vente:
+                return False, "Vente non trouvée"
+            
+            # Récupérer les détails
+            details = Sale.get_details(vente_id)
+            
+            # Récupérer l'historique des paiements
+            payment_history = Sale.get_payment_history(vente_id)
+            
+            # Générer le PDF
+            success, message = InvoiceGenerator.generate_invoice(
+                vente, 
+                details, 
+                payment_history, 
+                output_path, 
+                company_info
+            )
+            
+            return success, message
+        except Exception as e:
+            return False, f"Erreur export PDF : {str(e)}"
+

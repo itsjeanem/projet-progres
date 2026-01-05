@@ -613,7 +613,36 @@ class SaleDetailsDialog(QDialog):
 
     def print_invoice(self):
         """Imprimer la facture"""
-        QMessageBox.information(self, "Impression", "Fonction d'impression à implémenter")
+        try:
+            # Demander le chemin de sauvegarde
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, 
+                "Exporter la facture en PDF", 
+                f"Facture_{self.sale['numero_facture'].replace('/', '-')}.pdf",
+                "PDF Files (*.pdf)"
+            )
+            
+            if file_path:
+                # Informations entreprise (à adapter selon vos besoins)
+                company_info = {
+                    'name': 'Votre Entreprise',
+                    'address': '123 Rue de la Paix, 75000 Paris',
+                    'phone': '01 23 45 67 89',
+                    'email': 'contact@entreprise.fr'
+                }
+                
+                success, message = SaleController.export_sale_to_pdf(
+                    self.sale['id'],
+                    file_path,
+                    company_info
+                )
+                
+                if success:
+                    QMessageBox.information(self, "Succès", message)
+                else:
+                    QMessageBox.critical(self, "Erreur", message)
+        except Exception as e:
+            QMessageBox.critical(self, "Erreur", f"Erreur lors de l'export PDF : {str(e)}")
 
 
 class PaymentDialog(QDialog):
@@ -734,7 +763,36 @@ class SaleActionsDialog(QDialog):
 
     def print_invoice(self):
         """Imprimer la facture"""
-        QMessageBox.information(self, "Impression", "Fonction d'impression à implémenter")
+        try:
+            # Demander le chemin de sauvegarde
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, 
+                "Exporter la facture en PDF", 
+                f"Facture_{self.sale['numero_facture'].replace('/', '-')}.pdf",
+                "PDF Files (*.pdf)"
+            )
+            
+            if file_path:
+                # Informations entreprise (à adapter selon vos besoins)
+                company_info = {
+                    'name': 'Votre Entreprise',
+                    'address': '123 Rue de la Paix, 75000 Paris',
+                    'phone': '01 23 45 67 89',
+                    'email': 'contact@entreprise.fr'
+                }
+                
+                success, message = SaleController.export_sale_to_pdf(
+                    self.sale['id'],
+                    file_path,
+                    company_info
+                )
+                
+                if success:
+                    QMessageBox.information(self, "Succès", message)
+                else:
+                    QMessageBox.critical(self, "Erreur", message)
+        except Exception as e:
+            QMessageBox.critical(self, "Erreur", f"Erreur lors de l'export PDF : {str(e)}")
 
     def cancel_sale(self):
         """Annuler la vente"""

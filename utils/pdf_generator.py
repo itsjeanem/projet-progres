@@ -238,22 +238,25 @@ class InvoiceGenerator:
         story.append(Paragraph(f"{company_info['address']} | {company_info['phone']} | {company_info['email']}", styles['Normal']))
         story.append(Spacer(1, 0.3*inch))
         
-        # Infos facture
-        invoice_info = [
-            [
-                f"<b>FACTURE</b><br/><b>{sale.get('numero_facture', 'N/A')}</b>",
-                f"<b>Date:</b> {str(sale.get('date_vente', ''))[:10]}<br/><b>Client:</b> {sale.get('client_nom', 'N/A')}"
-            ]
-        ]
+        # Infos facture avec meilleure mise en page
+        facture_info = ParagraphStyle(
+            'FactureInfo',
+            parent=styles['Heading2'],
+            fontSize=14,
+            textColor=colors.HexColor('#1f4788'),
+            spaceAfter=12
+        )
         
-        table = Table(invoice_info, colWidths=[3*inch, 3*inch])
-        table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ]))
-        story.append(table)
+        info_style = ParagraphStyle(
+            'InfoDetail',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceAfter=6
+        )
+        
+        story.append(Paragraph(f"FACTURE N° {sale.get('numero_facture', 'N/A')}", facture_info))
+        story.append(Paragraph(f"<b>Date:</b> {str(sale.get('date_vente', ''))[:10]}", info_style))
+        story.append(Paragraph(f"<b>Client:</b> {sale.get('client_nom', 'N/A')}", info_style))
         story.append(Spacer(1, 0.2*inch))
         
         # Tableau des articles
@@ -267,20 +270,25 @@ class InvoiceGenerator:
                 f"{float(detail.get('sous_total', 0)):.2f}€"
             ])
         
-        table = Table(articles_data, colWidths=[3*inch, 1*inch, 1*inch, 1.5*inch])
+        table = Table(articles_data, colWidths=[2.5*inch, 1.2*inch, 1.2*inch, 1.1*inch])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1f4788')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TOPPADDING', (0, 0), (-1, 0), 12),
+            ('ROWPADDING', (0, 1), (-1, -1), 8),
             ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('LINEABOVE', (0, 0), (-1, 0), 2, colors.white)
         ]))
         story.append(table)
-        story.append(Spacer(1, 0.2*inch))
+        story.append(Spacer(1, 0.25*inch))
         
         # Totaux
         montant_total = float(sale.get('montant_total', 0))
@@ -288,46 +296,37 @@ class InvoiceGenerator:
         montant_reste = montant_total - montant_paye
         
         totals_data = [
-            ['', 'Montant total TTC', f'{montant_total:.2f}€'],
-            ['', 'Montant payé', f'{montant_paye:.2f}€'],
-            ['', '<b>Montant restant</b>', f'<b>{montant_reste:.2f}€</b>']
+            ['Montant total TTC', f'{montant_total:.2f}€'],
+            ['Montant payé', f'{montant_paye:.2f}€'],
+            ['Montant restant', f'{montant_reste:.2f}€']
         ]
         
-        table = Table(totals_data, colWidths=[3.5*inch, 1.5*inch, 1.5*inch])
+        table = Table(totals_data, colWidths=[4*inch, 1.5*inch])
         table.setStyle(TableStyle([
-            ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
-            ('FONTNAME', (1, 0), (-1, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (1, 0), (-1, -1), 11),
-            ('BACKGROUND', (1, -1), (-1, -1), colors.HexColor('#FFE699')),
-            ('GRID', (1, 0), (-1, -1), 1, colors.black)
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica'),
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (0, -1), 10),
+            ('FONTSIZE', (1, 0), (1, -1), 11),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#FFE699')),
+            ('TEXTCOLOR', (0, -1), (-1, -1), colors.black),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('LINEABOVE', (0, -1), (-1, -1), 2, colors.black)
         ]))
         story.append(table)
         story.append(Spacer(1, 0.3*inch))
         
-        # Historique paiements
-        if payment_history:
-            story.append(Paragraph("<b>Historique des paiements</b>", styles['Heading3']))
-            payments_data = [['Date', 'Montant']]
-            
-            for payment in payment_history:
-                payments_data.append([
-                    str(payment.get('date_paiement', ''))[:10],
-                    f"{float(payment.get('montant', 0)):.2f}€"
-                ])
-            
-            table = Table(payments_data, colWidths=[3.5*inch, 2.5*inch])
-            table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#E7E6E6')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black)
-            ]))
-            story.append(table)
+        # Signature ou note finale
+        story.append(Paragraph("<i>Merci pour votre achat!</i>", styles['Normal']))
+        story.append(Spacer(1, 0.2*inch))
+        story.append(Paragraph(f"Généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", styles['Normal']))
         
-        story.append(Spacer(1, 0.3*inch))
-        story.append(Paragraph(f"Généré le {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
-        
-        # Générer le PDF
-        doc.build(story)
+        try:
+            # Générer le PDF
+            doc.build(story)
+            return True, f"Facture générée avec succès : {output_path}"
+        except Exception as e:
+            return False, f"Erreur lors de la génération du PDF : {str(e)}"

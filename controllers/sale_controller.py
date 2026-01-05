@@ -67,3 +67,8 @@ class SaleController:
     def generate_invoice_number():
         """Générer un numéro de facture"""
         return Sale.generate_invoice_number()
+
+    @staticmethod
+    def export_sale_to_pdf(vente_id, output_path, company_info=None):
+        """Exporter une vente en PDF"""
+        return Sale.export_to_pdf(vente_id, output_path, company_info)

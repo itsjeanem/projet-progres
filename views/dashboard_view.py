@@ -65,7 +65,7 @@ class DashboardView(QWidget):
         scroll_layout.addWidget(self.create_charts_section())
         
         # Section Low Stock
-        scroll_layout.addWidget(self.create_low_stock_section())
+        # scroll_layout.addWidget(self.create_low_stock_section())
         
         scroll_layout.addStretch()
         scroll.setWidget(scroll_content)
@@ -239,49 +239,49 @@ class DashboardView(QWidget):
         group.setLayout(layout)
         return group
 
-    def create_low_stock_section(self):
-        """Créer la section des stocks critiques"""
-        group = QGroupBox("⚠️ Stocks Critiques")
-        layout = QVBoxLayout()
+    # def create_low_stock_section(self):
+    #     """Créer la section des stocks critiques"""
+    #     group = QGroupBox("⚠️ Stocks Critiques")
+    #     layout = QVBoxLayout()
         
-        # Récupérer les données
-        summary = StatisticsController.get_dashboard_summary()
-        low_stock = summary.get('low_stock', [])
+    #     # Récupérer les données
+    #     summary = StatisticsController.get_dashboard_summary()
+    #     low_stock = summary.get('low_stock', [])
         
-        if not low_stock:
-            no_data = QLabel("✓ Aucun produit en rupture de stock")
-            no_data.setStyleSheet("color: #4CAF50; font-weight: bold;")
-            layout.addWidget(no_data)
-        else:
-            table = QTableWidget()
-            table.setColumnCount(5)
-            table.setHorizontalHeaderLabels(["Produit", "Catégorie", "Stock Actuel", "Stock Min", "Déficit"])
-            table.setMaximumHeight(250)
+    #     if not low_stock:
+    #         no_data = QLabel("✓ Aucun produit en rupture de stock")
+    #         no_data.setStyleSheet("color: #4CAF50; font-weight: bold;")
+    #         layout.addWidget(no_data)
+    #     else:
+    #         table = QTableWidget()
+    #         table.setColumnCount(5)
+    #         table.setHorizontalHeaderLabels(["Produit", "Catégorie", "Stock Actuel", "Stock Min", "Déficit"])
+    #         table.setMaximumHeight(250)
             
-            table.setRowCount(len(low_stock))
+    #         table.setRowCount(len(low_stock))
             
-            for row, product in enumerate(low_stock):
-                # Produit
-                table.setItem(row, 0, QTableWidgetItem(product.get('nom', '')))
-                # Catégorie
-                table.setItem(row, 1, QTableWidgetItem(product.get('categorie', 'N/A')))
-                # Stock actuel
-                stock_item = QTableWidgetItem(str(product.get('stock_actuel', '')))
-                stock_item.setBackground(QColor('#FFE5E5'))
-                table.setItem(row, 2, stock_item)
-                # Stock min
-                table.setItem(row, 3, QTableWidgetItem(str(product.get('stock_min', ''))))
-                # Déficit
-                deficit_item = QTableWidgetItem(str(product.get('deficit', '')))
-                deficit_item.setBackground(QColor('#FF6B6B'))
-                deficit_item.setForeground(QColor('white'))
-                table.setItem(row, 4, deficit_item)
+    #         for row, product in enumerate(low_stock):
+    #             # Produit
+    #             table.setItem(row, 0, QTableWidgetItem(product.get('nom', '')))
+    #             # Catégorie
+    #             table.setItem(row, 1, QTableWidgetItem(product.get('categorie', 'N/A')))
+    #             # Stock actuel
+    #             stock_item = QTableWidgetItem(str(product.get('stock_actuel', '')))
+    #             stock_item.setBackground(QColor('#FFE5E5'))
+    #             table.setItem(row, 2, stock_item)
+    #             # Stock min
+    #             table.setItem(row, 3, QTableWidgetItem(str(product.get('stock_min', ''))))
+    #             # Déficit
+    #             deficit_item = QTableWidgetItem(str(product.get('deficit', '')))
+    #             deficit_item.setBackground(QColor('#FF6B6B'))
+    #             deficit_item.setForeground(QColor('white'))
+    #             table.setItem(row, 4, deficit_item)
             
-            table.resizeColumnsToContents()
-            layout.addWidget(table)
+    #         table.resizeColumnsToContents()
+    #         layout.addWidget(table)
         
-        group.setLayout(layout)
-        return group
+    #     group.setLayout(layout)
+    #     return group
 
     def load_data(self):
         """Charger les données du dashboard"""
