@@ -20,6 +20,9 @@ class SalesView(QWidget):
         super().__init__()
         
         uic.loadUi("views/ui/sales.ui", self)
+
+        # Make sure row height is enough for embedded action widgets
+        self.salesTable.verticalHeader().setDefaultSectionSize(44)
         
         self.sales_data = []
         
@@ -90,12 +93,16 @@ class SalesView(QWidget):
             self.salesTable.setItem(row_idx, 5, item_statut)
             
             # Actions
-            btn_actions = QPushButton("⋮")
-            btn_actions.setMaximumWidth(40)
+            btn_actions = QPushButton("⋮ Actions")
+            btn_actions.setProperty("variant", "tableAction")
+            btn_actions.setMinimumWidth(110)
             btn_actions.clicked.connect(lambda checked, s=sale: self.show_sale_menu(s))
             self.salesTable.setCellWidget(row_idx, 6, btn_actions)
         
         self.salesTable.resizeColumnsToContents()
+        self.salesTable.horizontalHeader().setStretchLastSection(True)
+        # Ensure the actions column stays readable
+        self.salesTable.setColumnWidth(6, 140)
 
     def update_stats(self):
         """Mettre à jour les statistiques"""

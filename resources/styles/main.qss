@@ -1,42 +1,302 @@
+/*
+   Global theme for the app.
+   Keep palette consistent with existing colors: primary #0078d7, bg #f5f5f5,
+   surface #ffffff, borders #ddd/#bbb, text #333.
+*/
+
 QWidget {
     font-family: Segoe UI;
     font-size: 13px;
-}
-
-QLabel {
     color: #333;
 }
 
-QLineEdit {
-    padding: 6px;
-    border: 1px solid #bbb;
-    border-radius: 6px;
+QMainWindow,
+QWidget#appCentral {
+    background-color: #f5f5f5;
 }
 
-QLineEdit:focus {
+/* Typography */
+QLabel#pageTitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Common labels coming from .ui files */
+QLabel#titleLabel {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
+QLabel#sectionTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+QLabel#hint {
+    color: #666;
+    font-size: 11px;
+}
+
+QLabel#statsLabel {
+    color: #666;
+    font-size: 11px;
+}
+
+/* Login form */
+QLabel#label {
+    font-size: 22px;
+    font-weight: 800;
+    color: #333;
+}
+
+QLabel#label_subtitle {
+    color: #666;
+    font-size: 12px;
+}
+
+/* Cards / panels */
+QFrame#card,
+QWidget#card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+QWidget#headerBar,
+QWidget#sidebar {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+QLabel#sidebarTitle {
+    font-weight: 700;
+    color: #333;
+}
+
+/* Inputs */
+QLineEdit,
+QComboBox,
+QSpinBox,
+QDoubleSpinBox,
+QTextEdit {
+    background-color: white;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    padding: 8px 10px;
+    selection-background-color: #0078d7;
+    selection-color: white;
+}
+
+QLineEdit:focus,
+QComboBox:focus,
+QSpinBox:focus,
+QDoubleSpinBox:focus,
+QTextEdit:focus {
     border: 1px solid #0078d7;
 }
 
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+/* Buttons */
 QPushButton {
     background-color: #0078d7;
     color: white;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-weight: bold;
+    padding: 8px 14px;
+    border: 1px solid #0078d7;
+    border-radius: 8px;
+    font-weight: 700;
 }
 
 QPushButton:hover {
     background-color: #005fa3;
+    border-color: #005fa3;
 }
 
 QPushButton:pressed {
     background-color: #004b82;
+    border-color: #004b82;
 }
 
+QPushButton:disabled {
+    background-color: #bbb;
+    border-color: #bbb;
+    color: white;
+}
+
+/* Destructive */
 QPushButton#btn_logout {
     background-color: #c0392b;
+    border-color: #c0392b;
 }
 
 QPushButton#btn_logout:hover {
     background-color: #a93226;
+    border-color: #a93226;
+}
+
+/* Table buttons should be calmer than primary */
+QTableView QPushButton {
+    background-color: #f5f5f5;
+    border: 1px solid #bbb;
+    color: #333;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+QTableView QPushButton:hover {
+    background-color: #e9e9e9;
+}
+
+/* Explicit variant for action buttons embedded in tables */
+QPushButton[variant="tableAction"] {
+    background-color: #f5f5f5;
+    border: 1px solid #bbb;
+    color: #333;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+QPushButton[variant="tableAction"]:hover {
+    background-color: #e9e9e9;
+}
+
+QPushButton[variant="tableAction"]:pressed {
+    background-color: #dcdcdc;
+}
+
+/* Tables */
+QTableView,
+QTableWidget {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    gridline-color: #eee;
+    /* Keep selection subtle so embedded buttons don't create a big blue block */
+    selection-background-color: #e9e9e9;
+    selection-color: #333;
+    alternate-background-color: #f9f9f9;
+}
+
+QTableView::item:selected,
+QTableWidget::item:selected {
+    background-color: #e9e9e9;
+    color: #333;
+}
+
+QHeaderView::section {
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 8px 10px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    font-weight: 700;
+}
+
+QTableView::item,
+QTableWidget::item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Tabs */
+QTabWidget::pane {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: white;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    padding: 8px 12px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-right: 6px;
+    font-weight: 700;
+    color: #333;
+}
+
+QTabBar::tab:selected {
+    background-color: white;
+    border-color: #ddd;
+}
+
+/* Group boxes */
+QGroupBox {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-top: 14px;
+    padding: 12px;
+    background-color: white;
+    font-weight: 700;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 6px 0 6px;
+}
+
+/* Scroll areas */
+QScrollArea {
+    border: none;
+    background: transparent;
+}
+
+/* Scroll bars */
+QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 10px;
+    margin: 4px 2px 4px 2px;
+}
+
+QScrollBar::handle:vertical {
+    background: #bbb;
+    min-height: 24px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #999;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+    background: transparent;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: transparent;
+    height: 10px;
+    margin: 2px 4px 2px 4px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #bbb;
+    min-width: 24px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #999;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+    background: transparent;
 }

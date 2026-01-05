@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTabWidget,
     QTableWidget, QTableWidgetItem, QDialog, QMessageBox, QComboBox, QSpinBox,
-    QDoubleSpinBox, QFileDialog, QTextEdit
+    QDoubleSpinBox, QFileDialog, QTextEdit, QFrame, QHeaderView
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
@@ -26,6 +26,8 @@ class SettingsView(QWidget):
     def init_no_access(self):
         """Afficher un message d'accès refusé"""
         layout = QVBoxLayout()
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
         label = QLabel("❌ Accès refusé : Seuls les administrateurs peuvent accéder aux paramètres")
         label.setStyleSheet("color: red; font-weight: bold; font-size: 14px;")
         layout.addWidget(label)
@@ -35,9 +37,12 @@ class SettingsView(QWidget):
     def init_ui(self):
         """Initialiser l'interface"""
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(12)
         
         # Titre
         title = QLabel("⚙️ Paramètres")
+        title.setObjectName("pageTitle")
         title_font = QFont()
         title_font.setPointSize(18)
         title_font.setBold(True)
@@ -45,6 +50,12 @@ class SettingsView(QWidget):
         layout.addWidget(title)
         
         # Tabs
+        card = QFrame()
+        card.setObjectName("card")
+        card_layout = QVBoxLayout(card)
+        card_layout.setContentsMargins(12, 12, 12, 12)
+        card_layout.setSpacing(10)
+
         tabs = QTabWidget()
         
         # Onglet Entreprise
@@ -56,7 +67,8 @@ class SettingsView(QWidget):
         # Onglet Paramètres généraux
         # tabs.addTab(self.create_general_tab(), "⚙️ Paramètres généraux")
         
-        layout.addWidget(tabs)
+        card_layout.addWidget(tabs)
+        layout.addWidget(card)
         self.setLayout(layout)
 
     def create_company_tab(self):
@@ -155,19 +167,30 @@ class SettingsView(QWidget):
         """Créer l'onglet utilisateurs"""
         widget = QWidget()
         layout = QVBoxLayout()
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(10)
         
         # Tableau des utilisateurs
-        layout.addWidget(QLabel("Gestion des utilisateurs"))
+        section = QLabel("Gestion des utilisateurs")
+        section.setObjectName("sectionTitle")
+        layout.addWidget(section)
         
         self.users_table = QTableWidget()
         self.users_table.setColumnCount(5)
         self.users_table.setHorizontalHeaderLabels(["ID", "Utilisateur", "Email", "Rôle", "Actif"])
+        self.users_table.setAlternatingRowColors(True)
+        self.users_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.users_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.users_table.horizontalHeader().setStretchLastSection(True)
+        self.users_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         
         self.load_users()
         layout.addWidget(self.users_table)
         
         # Boutons d'action
         buttons_layout = QHBoxLayout()
+        buttons_layout.setContentsMargins(0, 0, 0, 0)
+        buttons_layout.setSpacing(10)
         
         btn_add = QPushButton("➕ Nouvel utilisateur")
         btn_add.clicked.connect(self.open_new_user_dialog)

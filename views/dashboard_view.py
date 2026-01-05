@@ -15,35 +15,17 @@ class DashboardView(QWidget):
     
     def __init__(self):
         super().__init__()
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f5f5f5;
-            }
-            QGroupBox {
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-                background-color: white;
-                font-weight: bold;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-            }
-            QLabel {
-                color: #333;
-            }
-        """)
         self.init_ui()
 
     def init_ui(self):
         """Initialiser l'interface"""
         main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(12)
         
         # Titre
         title = QLabel("📊 Tableau de Bord")
+        title.setObjectName("pageTitle")
         title_font = QFont()
         title_font.setPointSize(24)
         title_font.setBold(True)
@@ -57,6 +39,8 @@ class DashboardView(QWidget):
         
         scroll_content = QWidget()
         scroll_layout = QVBoxLayout(scroll_content)
+        scroll_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_layout.setSpacing(12)
         
         # Section Top Products & Clients
         scroll_layout.addWidget(self.create_top_section())

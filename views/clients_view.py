@@ -44,6 +44,7 @@ class ClientsView(QWidget):
         self.clientsTable.setRowCount(0)
         self.clientsTable.setColumnCount(7)
         self.clientsTable.setHorizontalHeaderLabels(["ID", "Nom", "Prénom", "Téléphone", "Email", "Ville", "Actions"])
+        self.clientsTable.verticalHeader().setDefaultSectionSize(44)
         
         for row_idx, client in enumerate(clients):
             self.clientsTable.insertRow(row_idx)
@@ -71,14 +72,21 @@ class ClientsView(QWidget):
             # Actions
             actions_widget = QWidget()
             actions_layout = QHBoxLayout()
+            actions_layout.setSpacing(8)
             
             edit_btn = QPushButton("✏️ Modifier")
+            edit_btn.setProperty("variant", "tableAction")
+            edit_btn.setMinimumWidth(110)
             edit_btn.clicked.connect(lambda checked, cid=client.get('id'): self.edit_client_by_id(cid))
             
             delete_btn = QPushButton("🗑️ Supprimer")
+            delete_btn.setProperty("variant", "tableAction")
+            delete_btn.setMinimumWidth(120)
             delete_btn.clicked.connect(lambda checked, cid=client.get('id'): self.delete_client(cid))
             
             history_btn = QPushButton("📊 Historique")
+            history_btn.setProperty("variant", "tableAction")
+            history_btn.setMinimumWidth(120)
             history_btn.clicked.connect(lambda checked, cid=client.get('id'): self.show_history(cid))
             
             actions_layout.addWidget(edit_btn)
@@ -91,6 +99,9 @@ class ClientsView(QWidget):
         
         # Ajuster les largeurs
         self.clientsTable.resizeColumnsToContents()
+        # NOTE: Qt may ignore cellWidget sizes during resizeColumnsToContents.
+        # Make sure the Actions column remains wide enough to show button text.
+        self.clientsTable.setColumnWidth(6, 390)
         self.clientsTable.horizontalHeader().setStretchLastSection(True)
 
     def search_clients(self, search_term):

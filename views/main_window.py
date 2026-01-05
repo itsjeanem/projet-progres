@@ -24,30 +24,48 @@ class MainWindow(QMainWindow):
 
     def build_ui(self):
         central = QWidget()
+        central.setObjectName("appCentral")
         self.setCentralWidget(central)
 
         main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(16, 16, 16, 16)
+        main_layout.setSpacing(12)
         
         # En-tête avec infos utilisateur et permissions
-        header = QHBoxLayout()
+        header_widget = QWidget()
+        header_widget.setObjectName("headerBar")
+        header = QHBoxLayout(header_widget)
+        header.setContentsMargins(14, 12, 14, 12)
+        header.setSpacing(10)
+
         role_display = self._get_role_display()
         self.label_user = QLabel(
             f"Connecté : {self.user['username']} | Rôle: {role_display}"
         )
         self.btn_logout = QPushButton("Déconnexion")
+        self.btn_logout.setObjectName("btn_logout")
         self.btn_logout.clicked.connect(self.logout)
 
         header.addWidget(self.label_user)
         header.addStretch()
         header.addWidget(self.btn_logout)
-        main_layout.addLayout(header)
+        main_layout.addWidget(header_widget)
 
         # Navigation + contenu
         content_layout = QHBoxLayout()
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(12)
         
         # Sidebar avec navigation basée sur les rôles
-        sidebar = QVBoxLayout()
-        sidebar.addWidget(QLabel("Menu"))
+        sidebar_widget = QWidget()
+        sidebar_widget.setObjectName("sidebar")
+        sidebar = QVBoxLayout(sidebar_widget)
+        sidebar.setContentsMargins(12, 12, 12, 12)
+        sidebar.setSpacing(8)
+
+        menu_label = QLabel("Menu")
+        menu_label.setObjectName("sidebarTitle")
+        sidebar.addWidget(menu_label)
         
         # Dashboard - visible pour tous
         if check_permission(Permission.VIEW_DASHBOARD):
@@ -110,7 +128,8 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.settings_view)
         
         # Ajouter au layout
-        content_layout.addLayout(sidebar)
+        sidebar_widget.setMinimumWidth(220)
+        content_layout.addWidget(sidebar_widget)
         content_layout.addWidget(self.stacked_widget, 1)
         
         main_layout.addLayout(content_layout)

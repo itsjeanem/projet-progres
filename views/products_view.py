@@ -56,6 +56,7 @@ class ProductsView(QWidget):
         self.productsTable.setHorizontalHeaderLabels(
             ["ID", "Catégorie", "Produit", "P. Achat", "P. Vente", "Marge %", "Stock", "Actions"]
         )
+        self.productsTable.verticalHeader().setDefaultSectionSize(44)
         
         for row_idx, product in enumerate(products):
             self.productsTable.insertRow(row_idx)
@@ -109,14 +110,21 @@ class ProductsView(QWidget):
             # Actions
             actions_widget = QWidget()
             actions_layout = QHBoxLayout()
+            actions_layout.setSpacing(8)
             
             edit_btn = QPushButton("✏️ Modifier")
+            edit_btn.setProperty("variant", "tableAction")
+            edit_btn.setMinimumWidth(110)
             edit_btn.clicked.connect(lambda checked, pid=product.get('id'): self.edit_product_by_id(pid))
             
             stock_btn = QPushButton("📦 Stock")
+            stock_btn.setProperty("variant", "tableAction")
+            stock_btn.setMinimumWidth(90)
             stock_btn.clicked.connect(lambda checked, pid=product.get('id'): self.manage_stock(pid))
             
             delete_btn = QPushButton("🗑️ Supprimer")
+            delete_btn.setProperty("variant", "tableAction")
+            delete_btn.setMinimumWidth(120)
             delete_btn.clicked.connect(lambda checked, pid=product.get('id'): self.delete_product(pid))
             
             actions_layout.addWidget(edit_btn)
@@ -128,6 +136,8 @@ class ProductsView(QWidget):
             self.productsTable.setCellWidget(row_idx, 7, actions_widget)
         
         self.productsTable.resizeColumnsToContents()
+        # Ensure actions column stays readable (cell widgets aren't always considered by autosize)
+        self.productsTable.setColumnWidth(7, 360)
         self.productsTable.horizontalHeader().setStretchLastSection(True)
 
     def search_products(self, search_term):
