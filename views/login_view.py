@@ -12,7 +12,7 @@ class LoginView(QMainWindow):
 
         # Set window properties
         self.setWindowTitle("Connexion")
-        self.setFixedSize(1000, 700)
+        self.setMinimumSize(1000, 700)
         
         # Load the UI into the MainWindow
         uic.loadUi("views/ui/login.ui", self)
@@ -49,5 +49,5 @@ class LoginView(QMainWindow):
 
     def open_main_window(self, user):
         self.main_window = MainWindow(user)
-        self.main_window.show()
+        self.main_window.showMaximized()
         self.close()

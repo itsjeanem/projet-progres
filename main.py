@@ -27,7 +27,7 @@ def main():
 
     # Fermer le splash screen et afficher la connexion
     splash.finish(login)
-    login.show()
+    login.showMaximized()
 
     sys.exit(app.exec())
 
