@@ -42,7 +42,7 @@ class Sale:
         return f"{year}/{month:02d}/{next_num}"
 
     @staticmethod
-    def create(client_id, user_id, articles, tva=20, remise=0, remise_type='montant', notes=""):
+    def create(client_id, user_id, articles, tva=18, remise=0, remise_type='montant', notes=""):
         """Créer une nouvelle vente
         
         articles = [

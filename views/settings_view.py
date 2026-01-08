@@ -285,8 +285,8 @@ class SettingsView(QWidget):
         layout.addWidget(QLabel("TVA par défaut (%)"))
         self.tva = QDoubleSpinBox()
         self.tva.setMaximum(100)
-        tva_value = settings.get('tva_default', 20)
-        tva_float = float(tva_value) if tva_value and str(tva_value).strip() else 20
+        tva_value = settings.get('tva_default', 18)
+        tva_float = float(tva_value) if tva_value and str(tva_value).strip() else 18
         self.tva.setValue(tva_float)
         layout.addWidget(self.tva)
         

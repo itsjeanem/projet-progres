@@ -4,7 +4,7 @@ from models.sale import Sale
 class SaleController:
 
     @staticmethod
-    def create_sale(client_id, user_id, articles, tva=20, remise=0, remise_type='montant', notes=""):
+    def create_sale(client_id, user_id, articles, tva=18, remise=0, remise_type='montant', notes=""):
         """Créer une vente"""
         return Sale.create(client_id, user_id, articles, tva, remise, remise_type, notes)
 

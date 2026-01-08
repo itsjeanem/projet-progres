@@ -261,7 +261,7 @@ class SaleFormDialog(QDialog):
         
         calc_layout.addWidget(QLabel("TVA (%) :"))
         self.tva_input = QDoubleSpinBox()
-        self.tva_input.setValue(20)
+        self.tva_input.setValue(18)
         self.tva_input.setMaximum(100)
         self.tva_input.valueChanged.connect(self.update_totals)
         calc_layout.addWidget(self.tva_input)
