@@ -290,31 +290,72 @@ class InvoiceGenerator:
         story.append(table)
         story.append(Spacer(1, 0.25*inch))
         
-        # Totaux
+        # Totaux avec TVA
         montant_total = float(sale.get('montant_total', 0))
         montant_paye = float(sale.get('montant_paye', 0))
         montant_reste = montant_total - montant_paye
         
+        # Calculer HT et TVA à partir des détails
+        montant_ht = sum(float(detail.get('quantite', 0)) * float(detail.get('prix_unitaire', 0)) for detail in details)
+        montant_ttc = montant_total
+        montant_tva = montant_ttc - montant_ht
+        
+        # Si le calcul donne un TVA négatif ou zéro, assumer 18%
+        if montant_tva <= 0:
+            montant_tva = montant_ht * 0.18
+            montant_ttc = montant_ht + montant_tva
+        
         totals_data = [
-            ['Montant total TTC', f'{montant_total:.2f} XOF'],
-            ['Montant payé', f'{montant_paye:.2f} XOF'],
-            ['Montant restant', f'{montant_reste:.2f} XOF']
+            ['Total HT (Hors Taxes)', f'{montant_ht:.2f} XOF'],
+            ['TVA 18%', f'{montant_tva:.2f} XOF'],
+            ['Total TTC (Toutes Taxes Comprises)', f'{montant_ttc:.2f} XOF'],
+            ['Montant Payé', f'{montant_paye:.2f} XOF'],
+            ['Solde à Payer', f'{montant_reste:.2f} XOF']
         ]
         
-        table = Table(totals_data, colWidths=[4*inch, 1.5*inch])
+        table = Table(totals_data, colWidths=[3.5*inch, 2*inch])
         table.setStyle(TableStyle([
+            # Alignement
             ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
             ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica'),
-            ('FONTNAME', (1, 0), (1, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (0, -1), 10),
-            ('FONTSIZE', (1, 0), (1, -1), 11),
-            ('TOPPADDING', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
-            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#FFE699')),
-            ('TEXTCOLOR', (0, -1), (-1, -1), colors.black),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('LINEABOVE', (0, -1), (-1, -1), 2, colors.black)
+            
+            # Polices
+            ('FONTNAME', (0, 0), (0, 1), 'Helvetica'),
+            ('FONTNAME', (0, 2), (0, 2), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 3), (0, 4), 'Helvetica'),
+            ('FONTNAME', (1, 0), (1, 1), 'Helvetica'),
+            ('FONTNAME', (1, 2), (1, 2), 'Helvetica-Bold'),
+            ('FONTNAME', (1, 3), (1, 3), 'Helvetica'),
+            ('FONTNAME', (1, 4), (1, 4), 'Helvetica-Bold'),
+            
+            # Tailles
+            ('FONTSIZE', (0, 0), (0, 1), 10),
+            ('FONTSIZE', (0, 2), (0, 2), 12),
+            ('FONTSIZE', (0, 3), (0, 4), 10),
+            ('FONTSIZE', (1, 0), (1, 1), 10),
+            ('FONTSIZE', (1, 2), (1, 2), 12),
+            ('FONTSIZE', (1, 3), (1, 3), 10),
+            ('FONTSIZE', (1, 4), (1, 4), 11),
+            
+            # Padding
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 12),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 12),
+            
+            # Couleurs et bordures
+            ('LINEBELOW', (0, 1), (-1, 1), 1, colors.grey),
+            ('LINEBELOW', (0, 2), (-1, 2), 2, colors.HexColor('#1f4788')),
+            ('BACKGROUND', (0, 2), (-1, 2), colors.HexColor('#E8F0F8')),
+            ('TEXTCOLOR', (0, 2), (-1, 2), colors.HexColor('#1f4788')),
+            ('BACKGROUND', (0, 4), (-1, 4), colors.HexColor('#FFE699')),
+            ('TEXTCOLOR', (0, 4), (-1, 4), colors.HexColor('#C65911')),
+            ('LINEABOVE', (0, 4), (-1, 4), 2, colors.HexColor('#C65911')),
+            ('LINEBELOW', (0, 4), (-1, 4), 2, colors.HexColor('#C65911')),
+            
+            # Grille légère
+            ('GRID', (0, 0), (-1, 1), 0.5, colors.lightgrey),
+            ('GRID', (0, 3), (-1, 3), 0.5, colors.lightgrey)
         ]))
         story.append(table)
         story.append(Spacer(1, 0.3*inch))
