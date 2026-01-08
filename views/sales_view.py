@@ -66,13 +66,13 @@ class SalesView(QWidget):
             
             # Montant total
             montant = float(sale.get('montant_total', 0))
-            item_montant = QTableWidgetItem(f"{montant:.2f}€")
+            item_montant = QTableWidgetItem(f"{montant:.2f} XOF")
             item_montant.setTextAlignment(Qt.AlignmentFlag.AlignRight)
             self.salesTable.setItem(row_idx, 3, item_montant)
             
             # Montant payé
             paye = float(sale.get('montant_paye', 0))
-            item_paye = QTableWidgetItem(f"{paye:.2f}€")
+            item_paye = QTableWidgetItem(f"{paye:.2f} XOF")
             item_paye.setTextAlignment(Qt.AlignmentFlag.AlignRight)
             self.salesTable.setItem(row_idx, 4, item_paye)
             
@@ -115,8 +115,8 @@ class SalesView(QWidget):
         
         self.statsLabel.setText(
             f"📊 Statistiques du jour : Ventes: {total_ventes} | "
-            f"CA: {ca_total:.2f}€ | Ticket moyen: {ticket_moyen:.2f}€ | "
-            f"Impayés: {montant_reste:.2f}€"
+            f"CA: {ca_total:.2f} XOF | Ticket moyen: {ticket_moyen:.2f} XOF | "
+            f"Impayés: {montant_reste:.2f} XOF"
         )
 
     def search_sales(self, query):
@@ -284,15 +284,15 @@ class SaleFormDialog(QDialog):
         totals_layout = QHBoxLayout()
         totals_layout.addStretch()
         totals_layout.addWidget(QLabel("Total HT :"))
-        self.total_ht_label = QLabel("0.00€")
+        self.total_ht_label = QLabel("0.00XOF")
         self.total_ht_label.setStyleSheet("font-weight: bold")
         totals_layout.addWidget(self.total_ht_label)
         totals_layout.addWidget(QLabel("TVA :"))
-        self.tva_label = QLabel("0.00€")
+        self.tva_label = QLabel("0.00XOF")
         self.tva_label.setStyleSheet("font-weight: bold")
         totals_layout.addWidget(self.tva_label)
         totals_layout.addWidget(QLabel("Total TTC :"))
-        self.total_ttc_label = QLabel("0.00€")
+        self.total_ttc_label = QLabel("0.00XOF")
         self.total_ttc_label.setStyleSheet("font-weight: bold; color: green")
         totals_layout.addWidget(self.total_ttc_label)
         layout.addLayout(totals_layout)
@@ -383,7 +383,7 @@ class SaleFormDialog(QDialog):
                         prix = 0.0
                     
                     # Ajouter au combo box
-                    display_text = f"{nom} ({categorie}) - {prix:.2f}€"
+                    display_text = f"{nom} ({categorie}) - {prix:.2f} XOF"
                     self.product_combo.addItem(display_text, (produit_id, prix))
                 except Exception as e:
                     print(f"Erreur lors du chargement du produit : {e}")
@@ -424,7 +424,7 @@ class SaleFormDialog(QDialog):
             
             # Extraire le nom du produit de manière sécurisée
             combo_text = self.product_combo.currentText()
-            # Format: "Nom (Catégorie) - Prix€"
+            # Format: "Nom (Catégorie) - PrixXOF"
             if '(' in combo_text:
                 nom = combo_text.split('(')[0].strip()
             else:
@@ -454,10 +454,10 @@ class SaleFormDialog(QDialog):
             self.articles_table.setItem(row, 1, QTableWidgetItem(str(article['quantite'])))
             
             prix = article['prix_unitaire']
-            self.articles_table.setItem(row, 2, QTableWidgetItem(f"{prix:.2f}€"))
+            self.articles_table.setItem(row, 2, QTableWidgetItem(f"{prix:.2f} XOF"))
             
             total = article['quantite'] * prix
-            self.articles_table.setItem(row, 3, QTableWidgetItem(f"{total:.2f}€"))
+            self.articles_table.setItem(row, 3, QTableWidgetItem(f"{total:.2f} XOF"))
             
             btn_remove = QPushButton("✗")
             btn_remove.clicked.connect(lambda checked, r=row: self.remove_article(r))
@@ -486,9 +486,9 @@ class SaleFormDialog(QDialog):
         montant_tva = montant_ht_net * (tva_pct / 100)
         montant_ttc = montant_ht_net + montant_tva
         
-        self.total_ht_label.setText(f"{montant_ht_net:.2f}€")
-        self.tva_label.setText(f"{montant_tva:.2f}€")
-        self.total_ttc_label.setText(f"{montant_ttc:.2f}€")
+        self.total_ht_label.setText(f"{montant_ht_net:.2f} XOF")
+        self.tva_label.setText(f"{montant_tva:.2f} XOF")
+        self.total_ttc_label.setText(f"{montant_ttc:.2f} XOF")
 
     def open_new_client_dialog(self):
         """Ouvrir le dialogue de création de client"""
@@ -561,9 +561,9 @@ class SaleDetailsDialog(QDialog):
         for row, detail in enumerate(details):
             self.details_table.setItem(row, 0, QTableWidgetItem(detail.get('produit_nom', '')))
             self.details_table.setItem(row, 1, QTableWidgetItem(str(detail.get('quantite', ''))))
-            self.details_table.setItem(row, 2, QTableWidgetItem(f"{float(detail.get('prix_unitaire', 0)):.2f}€"))
+            self.details_table.setItem(row, 2, QTableWidgetItem(f"{float(detail.get('prix_unitaire', 0)):.2f} XOF"))
             total = float(detail.get('sous_total', 0))
-            self.details_table.setItem(row, 3, QTableWidgetItem(f"{total:.2f}€"))
+            self.details_table.setItem(row, 3, QTableWidgetItem(f"{total:.2f} XOF"))
         
         self.details_table.resizeColumnsToContents()
         layout.addWidget(self.details_table)
@@ -572,9 +572,9 @@ class SaleDetailsDialog(QDialog):
         layout.addWidget(QLabel("Paiements :"))
         
         payment_layout = QHBoxLayout()
-        payment_layout.addWidget(QLabel(f"<b>Montant total:</b> {float(self.sale.get('montant_total', 0)):.2f}€"))
-        payment_layout.addWidget(QLabel(f"<b>Montant payé:</b> {float(self.sale.get('montant_paye', 0)):.2f}€"))
-        payment_layout.addWidget(QLabel(f"<b>Montant restant:</b> {float(self.sale.get('montant_reste', 0)):.2f}€"))
+        payment_layout.addWidget(QLabel(f"<b>Montant total:</b> {float(self.sale.get('montant_total', 0)):.2f} XOF"))
+        payment_layout.addWidget(QLabel(f"<b>Montant payé:</b> {float(self.sale.get('montant_paye', 0)):.2f} XOF"))
+        payment_layout.addWidget(QLabel(f"<b>Montant restant:</b> {float(self.sale.get('montant_reste', 0)):.2f} XOF"))
         payment_layout.addStretch()
         layout.addLayout(payment_layout)
         
@@ -588,7 +588,7 @@ class SaleDetailsDialog(QDialog):
         
         for row, payment in enumerate(payments):
             self.payments_table.setItem(row, 0, QTableWidgetItem(str(payment.get('date_paiement', ''))[:10]))
-            self.payments_table.setItem(row, 1, QTableWidgetItem(f"{float(payment.get('montant', 0)):.2f}€"))
+            self.payments_table.setItem(row, 1, QTableWidgetItem(f"{float(payment.get('montant', 0)):.2f} XOF"))
         
         layout.addWidget(self.payments_table)
         
@@ -669,9 +669,9 @@ class PaymentDialog(QDialog):
         montant_paye = float(self.sale.get('montant_paye', 0))
         montant_restant = montant_total - montant_paye
         
-        layout.addWidget(QLabel(f"<b>Montant total:</b> {montant_total:.2f}€"))
-        layout.addWidget(QLabel(f"<b>Montant payé:</b> {montant_paye:.2f}€"))
-        layout.addWidget(QLabel(f"<b>Montant restant:</b> {montant_restant:.2f}€"))
+        layout.addWidget(QLabel(f"<b>Montant total:</b> {montant_total:.2f} XOF"))
+        layout.addWidget(QLabel(f"<b>Montant payé:</b> {montant_paye:.2f} XOF"))
+        layout.addWidget(QLabel(f"<b>Montant restant:</b> {montant_restant:.2f} XOF"))
         layout.addWidget(QLabel(""))
         
         layout.addWidget(QLabel("Montant à payer *"))

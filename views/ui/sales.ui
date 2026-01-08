@@ -138,7 +138,7 @@
    <item>
     <widget class="QLabel" name="statsLabel">
      <property name="text">
-      <string>📊 Statistiques du jour : Ventes: 0 | CA: 0€ | Ticket moyen: 0€ | Impayés: 0€</string>
+      <string>📊 Statistiques du jour : Ventes: 0 | CA: 0XOF | Ticket moyen: 0XOF | Impayés: 0XOF</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

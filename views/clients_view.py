@@ -361,8 +361,8 @@ class HistoryDialog(QDialog):
         if self.stats:
             stats_text = f"""
             Nombre d'achats : {self.stats.get('nombre_achats', 0) or 0}
-            CA Total : {self.stats.get('ca_total', 0) or 0:.2f} €
-            Montant moyen : {self.stats.get('montant_moyen', 0) or 0:.2f} €
+            CA Total : {self.stats.get('ca_total', 0) or 0:.2f} XOF
+            Montant moyen : {self.stats.get('montant_moyen', 0) or 0:.2f} XOF
             Dernière visite : {self.stats.get('derniere_visite', 'N/A')}
             """
             layout.addWidget(QLabel(stats_text))
@@ -380,7 +380,7 @@ class HistoryDialog(QDialog):
         for row_idx, item in enumerate(self.history):
             table.setItem(row_idx, 0, QTableWidgetItem(item.get('numero_facture', '')))
             table.setItem(row_idx, 1, QTableWidgetItem(str(item.get('date_vente', ''))))
-            table.setItem(row_idx, 2, QTableWidgetItem(f"{item.get('montant_total', 0):.2f} €"))
+            table.setItem(row_idx, 2, QTableWidgetItem(f"{item.get('montant_total', 0):.2f} XOF"))
             table.setItem(row_idx, 3, QTableWidgetItem(item.get('statut', '')))
         
         table.resizeColumnsToContents()

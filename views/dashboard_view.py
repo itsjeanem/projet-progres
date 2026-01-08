@@ -70,9 +70,9 @@ class DashboardView(QWidget):
         
         # Cards de KPIs
         kpis = [
-            ("📅 Aujourd'hui", f"{summary['ca_today']:.2f}€", "#4CAF50"),
-            ("📊 Cette semaine", f"{summary['ca_week']:.2f}€", "#2196F3"),
-            ("📆 Ce mois", f"{summary['ca_month']:.2f}€", "#FF9800"),
+            ("📅 Aujourd'hui", f"{summary['ca_today']:.2f} XOF", "#4CAF50"),
+            ("📊 Cette semaine", f"{summary['ca_week']:.2f} XOF", "#2196F3"),
+            ("📆 Ce mois", f"{summary['ca_month']:.2f} XOF", "#FF9800"),
             ("💰 Ventes aujourd'hui", f"{summary['sales_today']}", "#9C27B0"),
         ]
         
@@ -144,7 +144,7 @@ class DashboardView(QWidget):
             products_table.setItem(row, 0, QTableWidgetItem(product.get('nom', '')))
             products_table.setItem(row, 1, QTableWidgetItem(str(product.get('quantite_vendue', ''))))
             ca = float(product.get('ca', 0))
-            products_table.setItem(row, 2, QTableWidgetItem(f"{ca:.2f}€"))
+            products_table.setItem(row, 2, QTableWidgetItem(f"{ca:.2f} XOF"))
         
         products_table.resizeColumnsToContents()
         top_products_layout.addWidget(products_table)
@@ -166,7 +166,7 @@ class DashboardView(QWidget):
             clients_table.setItem(row, 0, QTableWidgetItem(client.get('client_nom', '')))
             clients_table.setItem(row, 1, QTableWidgetItem(str(client.get('nombre_achats', ''))))
             ca = float(client.get('ca_total', 0))
-            clients_table.setItem(row, 2, QTableWidgetItem(f"{ca:.2f}€"))
+            clients_table.setItem(row, 2, QTableWidgetItem(f"{ca:.2f} XOF"))
         
         clients_table.resizeColumnsToContents()
         top_clients_layout.addWidget(clients_table)
@@ -197,7 +197,7 @@ class DashboardView(QWidget):
             ax1.plot(dates, values, marker='o', linestyle='-', color='#2196F3', linewidth=2)
             ax1.set_title('Évolution du CA (30 derniers jours)', fontweight='bold')
             ax1.set_xlabel('Date')
-            ax1.set_ylabel('CA (€)')
+            ax1.set_ylabel('CA (XOF)')
             ax1.grid(True, alpha=0.3)
             fig1.tight_layout()
             

@@ -215,7 +215,7 @@ class SaleValidator:
             if montant_paye <= 0:
                 return False, "Montant doit être supérieur à 0"
             if montant_paye > montant_total:
-                return False, f"Montant supérieur au total ({montant_total}€)"
+                return False, f"Montant supérieur au total ({montant_total} XOF)"
             return True, ""
         except ValueError:
             return False, "Format montant invalide"

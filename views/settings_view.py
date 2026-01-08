@@ -278,7 +278,7 @@ class SettingsView(QWidget):
         # Devise
         layout.addWidget(QLabel("Devise"))
         self.currency = QLineEdit()
-        self.currency.setText(settings.get('currency', '€'))
+        self.currency.setText(settings.get('currency', 'XOF'))
         layout.addWidget(self.currency)
         
         # TVA par défaut

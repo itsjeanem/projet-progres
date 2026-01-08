@@ -77,12 +77,12 @@ class ProductsView(QWidget):
             self.productsTable.setItem(row_idx, 2, prod_item)
             
             # Prix achat
-            pa_item = QTableWidgetItem(f"{product.get('prix_achat', 0):.2f} €")
+            pa_item = QTableWidgetItem(f"{product.get('prix_achat', 0):.2f} XOF")
             pa_item.setFlags(pa_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
             self.productsTable.setItem(row_idx, 3, pa_item)
             
             # Prix vente
-            pv_item = QTableWidgetItem(f"{product.get('prix_vente', 0):.2f} €")
+            pv_item = QTableWidgetItem(f"{product.get('prix_vente', 0):.2f} XOF")
             pv_item.setFlags(pv_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
             self.productsTable.setItem(row_idx, 4, pv_item)
             
@@ -290,13 +290,13 @@ class ProductFormDialog(QDialog):
         # Prix achat
         layout.addWidget(QLabel("Prix d'achat *"))
         self.prix_achat_input = QLineEdit()
-        self.prix_achat_input.setPlaceholderText("€")
+        self.prix_achat_input.setPlaceholderText("XOF")
         layout.addWidget(self.prix_achat_input)
         
         # Prix vente
         layout.addWidget(QLabel("Prix de vente *"))
         self.prix_vente_input = QLineEdit()
-        self.prix_vente_input.setPlaceholderText("€")
+        self.prix_vente_input.setPlaceholderText("XOF")
         layout.addWidget(self.prix_vente_input)
         
         # Affichage marge en temps réel

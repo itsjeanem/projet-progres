@@ -55,7 +55,7 @@ class SettingsController:
         return Settings.get_general_settings()
 
     @staticmethod
-    def update_general_settings(currency='€', tva=20, invoice_prefix='FAC', date_format='DD/MM/YYYY', timezone='Europe/Paris'):
+    def update_general_settings(currency='XOF', tva=20, invoice_prefix='FAC', date_format='DD/MM/YYYY', timezone='Europe/Paris'):
         """Mettre à jour les paramètres généraux"""
         return Settings.update_general_settings(currency, tva, invoice_prefix, date_format, timezone)
 

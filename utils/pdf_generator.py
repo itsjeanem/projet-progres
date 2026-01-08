@@ -157,8 +157,8 @@ class ClientPDFGenerator:
                 stats_text = f"""
                 <b>Statistiques:</b><br/>
                 Nombre d'achats: {stats.get('nombre_achats', 0)}<br/>
-                Chiffre d'affaires total: {float(stats.get('ca_total', 0)):.2f}€<br/>
-                Montant moyen par achat: {float(stats.get('montant_moyen', 0)):.2f}€<br/>
+                Chiffre d'affaires total: {float(stats.get('ca_total', 0)):.2f} XOF<br/>
+                Montant moyen par achat: {float(stats.get('montant_moyen', 0)):.2f} XOF<br/>
                 Dernière visite: {stats.get('derniere_visite', 'N/A')}<br/>
                 """
                 story.append(Paragraph(stats_text, info_style))
@@ -175,7 +175,7 @@ class ClientPDFGenerator:
                     history_data.append([
                         str(item.get('numero_facture', '')),
                         str(item.get('date_vente', ''))[:10],
-                        f"{float(item.get('montant_total', 0)):.2f}€",
+                        f"{float(item.get('montant_total', 0)):.2f} XOF",
                         item.get('statut', '')
                     ])
                 
@@ -266,8 +266,8 @@ class InvoiceGenerator:
             articles_data.append([
                 detail.get('produit_nom', ''),
                 str(detail.get('quantite', '')),
-                f"{float(detail.get('prix_unitaire', 0)):.2f}€",
-                f"{float(detail.get('sous_total', 0)):.2f}€"
+                f"{float(detail.get('prix_unitaire', 0)):.2f} XOF",
+                f"{float(detail.get('sous_total', 0)):.2f} XOF"
             ])
         
         table = Table(articles_data, colWidths=[2.5*inch, 1.2*inch, 1.2*inch, 1.1*inch])
@@ -296,9 +296,9 @@ class InvoiceGenerator:
         montant_reste = montant_total - montant_paye
         
         totals_data = [
-            ['Montant total TTC', f'{montant_total:.2f}€'],
-            ['Montant payé', f'{montant_paye:.2f}€'],
-            ['Montant restant', f'{montant_reste:.2f}€']
+            ['Montant total TTC', f'{montant_total:.2f} XOF'],
+            ['Montant payé', f'{montant_paye:.2f} XOF'],
+            ['Montant restant', f'{montant_reste:.2f} XOF']
         ]
         
         table = Table(totals_data, colWidths=[4*inch, 1.5*inch])

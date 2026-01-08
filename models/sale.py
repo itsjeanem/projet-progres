@@ -270,7 +270,7 @@ class Sale:
             
             conn.commit()
             montant_restant = montant_total - nouveau_paiement
-            return True, f"Paiement enregistré : {montant_paye:.2f}€ (Montant restant: {montant_restant:.2f}€)"
+            return True, f"Paiement enregistré : {montant_paye:.2f} XOF (Montant restant: {montant_restant:.2f} XOF)"
         
         except Exception as e:
             conn.rollback()
