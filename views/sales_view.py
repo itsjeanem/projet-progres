@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 from controllers.sale_controller import SaleController
+from utils.path import resource_path
 from controllers.product_controller import ProductController
 from controllers.client_controller import ClientController
 from utils.validators import SaleValidator
@@ -19,7 +20,7 @@ class SalesView(QWidget):
     def __init__(self):
         super().__init__()
         
-        uic.loadUi("views/ui/sales.ui", self)
+        uic.loadUi(resource_path("views/ui/sales.ui"), self)
 
         # Make sure row height is enough for embedded action widgets
         self.salesTable.verticalHeader().setDefaultSectionSize(44)

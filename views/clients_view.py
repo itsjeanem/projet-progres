@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 from controllers.client_controller import ClientController
+from utils.path import resource_path
 from utils.validators import ClientValidator
 from utils.excel_exporter import ClientExporter
 from utils.pdf_generator import ClientPDFGenerator
@@ -15,7 +16,7 @@ class ClientsView(QWidget):
     def __init__(self):
         super().__init__()
         
-        uic.loadUi("views/ui/clients.ui", self)
+        uic.loadUi(resource_path("views/ui/clients.ui"), self)
         
         self.clients_data = []
         

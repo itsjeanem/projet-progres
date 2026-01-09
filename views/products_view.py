@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 from controllers.product_controller import ProductController
+from utils.path import resource_path
 from utils.validators import ProductValidator
 from utils.session import Session
 from datetime import datetime
@@ -15,7 +16,7 @@ class ProductsView(QWidget):
     def __init__(self):
         super().__init__()
         
-        uic.loadUi("views/ui/products.ui", self)
+        uic.loadUi(resource_path("views/ui/products.ui"), self)
         
         self.products_data = []
         self.categories = []

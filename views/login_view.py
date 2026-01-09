@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from controllers.user_controller import UserController
 from views.main_window import MainWindow
 from utils.session import Session
+from utils.path import resource_path
 
 
 class LoginView(QMainWindow):
@@ -15,7 +16,7 @@ class LoginView(QMainWindow):
         self.setMinimumSize(1000, 700)
         
         # Load the UI into the MainWindow
-        uic.loadUi("views/ui/login.ui", self)
+        uic.loadUi(resource_path("views/ui/login.ui"), self)
         
         # Get references to UI elements
         self.btn_login.clicked.connect(self.handle_login)

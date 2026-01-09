@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
 from views.login_view import LoginView
 from views.splash_screen import SplashScreen
+from utils.path import resource_path
 from PyQt6.QtCore import QFile
 
 
@@ -16,7 +17,7 @@ def main():
 
     # Charger le style
     splash.update_message("Chargement des styles...")
-    with open("resources/styles/main.qss", "r") as f:
+    with open(resource_path("resources/styles/main.qss"), "r") as f:
         app.setStyleSheet(f.read())
     app.processEvents()
 
